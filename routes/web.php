@@ -26,13 +26,21 @@ Route::middleware(['authenticate'])->group(function () {
 
     // Sale Route
     // Route::get('/sales/{id}/invoice', [SaleController::class, 'showInvoice'])->name('sales.invoice');
+    Route::get('/sales/{id}/invoice', [SaleController::class, 'showInvoice'])->name('sales.invoice');
+    Route::resource('sales', SaleController::class);
 
+    // Member Route
+    Route::resource('members', MemberController::class);
 
     // Superadmin Route
     Route::middleware(['superadmin'])->group(function () {
         // User Route
         Route::resource('user', UserController::class);
 
+        Route::get('/sales/export', [SalesExportController::class, 'export'])->name('sales.export');
+        Route::get('/sales/export/excel', function () {
+            return Excel::download(new SalesExport, 'sales.xlsx');
+        })->name('sales.export');        
 
         // Product Route
         Route::put('/products/{id}/update-stock', [ProductController::class, 'updateStock'])->name('products.updateStock');
@@ -45,6 +53,8 @@ Route::middleware(['authenticate'])->group(function () {
     
     // User Route
     Route::middleware(['user'])->group(function () {    
+        
+        Route::post('/confirm-sale', [SaleController::class, 'confirmationStore'])->name('sales.confirmationStore');
         // Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     });
 });

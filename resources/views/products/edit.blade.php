@@ -103,19 +103,24 @@
         const fileNameSpan = document.getElementById('file-name');
 
         function formatRupiah(value) {
-            const number_string = value.replace(/[^,\d]/g, '').toString();
-            const split = number_string.split(',');
-            let sisa = split[0].length % 3;
-            let rupiah = split[0].substr(0, sisa);
-            const ribuan = split[0].substr(sisa).match(/\d{3}/g);
+        const number_string = value.replace(/[^,\d]/g, '').toString();
+        const split = number_string.split(',');
+        let sisa = split[0].length % 3;
+        let rupiah = split[0].substr(0, sisa);
+        const ribuan = split[0].substr(sisa).match(/\d{3}/g);
 
-            if (ribuan) {
-                const separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            return 'Rp ' + rupiah + (split[1] !== undefined ? ',' + split[1] : '');
+        if (ribuan) {
+            const separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
         }
+
+        // Jika ada angka setelah koma dan angka tersebut adalah 00, kita hapus koma
+        if (split[1] && split[1] === '00') {
+            return 'Rp ' + rupiah; // Hanya tampilkan angka tanpa koma
+        }
+
+        return 'Rp ' + rupiah + (split[1] !== undefined ? ',' + split[1] : ''); 
+    }
 
         // Initialize price formatting
         if (priceDisplay.value) {
