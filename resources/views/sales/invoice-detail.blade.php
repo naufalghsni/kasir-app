@@ -23,6 +23,10 @@
                                 <div class="col-md-6 text-md-end">
                                     <h5>Tanggal Transaksi</h5>
                                     <p>{{ $createdAt->format('d F Y, H:i') }}</p>
+                                    
+                                    @if($memberId)
+                                        <p><strong>Poin Didapat:</strong> {{ $points }} Poin</p>
+                                    @endif
                                 </div>
                             </div>
                             

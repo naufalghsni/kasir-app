@@ -63,13 +63,26 @@
                                             <label for="total_pay">Jumlah Poin</label>
                                             <input type="text" class="form-control" id="total_pay" name="total_point" value="{{ $member['points'] }}" readonly>
                                         </div>
-                                        <div class="form-group mb-3">
-                                            <label for="use_point" class="d-flex align-items-center">
-                                                <input type="hidden" name="use_point" value="0">
-                                                <input type="checkbox" name="use_point" value="1" id="use_point" class="styled-checkbox me-2 mr-1">
-                                                Gunakan Poin
-                                            </label>
-                                        </div>
+                                        
+                                        @if ($member['points'] > 0)
+                                            <div class="form-group mb-3">
+                                                <label for="use_point" class="d-flex align-items-center">
+                                                    <input type="hidden" name="use_point" value="0">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        name="use_point" 
+                                                        value="1" 
+                                                        id="use_point" 
+                                                        class="styled-checkbox me-2 mr-1"
+                                                    >
+                                                    <span>Gunakan Poin</span>
+                                                </label>
+                                            </div>
+                                        @else
+                                            <div class="form-group mb-3">
+                                                <small class="text-danger mt-1">Member tidak memiliki poin untuk digunakan.</small>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
 
@@ -121,6 +134,11 @@
 
         function formatRupiah(angka) {
             return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Tambahan: jika ingin interaktif saat load
+        if (parseInt($('#total_pay').val()) <= 0) {
+            $('#use_point').prop('disabled', true);
         }
     });
 </script>

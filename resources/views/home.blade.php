@@ -73,6 +73,20 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- Grafik Jumlah Stok Produk --}}
+                <div class="row justify-content-center mt-4">
+                    <div class="col-lg-10">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="mb-4">Grafik Jumlah Stok Produk</h5>
+                                <div class="chart-container" style="height: 400px; position: relative;">
+                                    <canvas id="stockChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -128,6 +142,76 @@
                     },
                     title: {
                         display: true,
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 12
+                        }
+                    },
+                    title: {
+                        display: true,
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const stockCtx = document.getElementById('stockChart').getContext('2d');
+
+    new Chart(stockCtx, {
+        type: 'bar',
+        data: {
+            labels: @json($productNames),
+            datasets: [{
+                label: 'Jumlah Stok',
+                data: @json($productStocks),
+                backgroundColor: '#10b981',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { 
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                tooltip: {
+                    bodyFont: {
+                        size: 14
+                    },
+                    titleFont: {
+                        size: 16
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        font: {
+                            size: 12
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Stok',
                         font: {
                             size: 14,
                             weight: 'bold'

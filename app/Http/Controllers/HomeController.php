@@ -10,7 +10,6 @@ use App\Models\Member;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-
 class HomeController extends Controller
 {
     /**
@@ -43,20 +42,25 @@ class HomeController extends Controller
             ->orderBy('date')
             ->get();
 
-        // Pisahkan tanggal & totalnya ke array biasa
+        // Format tanggal dan total penjualan
         $salesDates = $salesPerDay->pluck('date')->map(function($d) {
             return Carbon::parse($d)->format('d M');
         });
         $salesTotals = $salesPerDay->pluck('total');
 
-        // Kirimkan data ke view
+        // Tambahan: Ambil data stok produk untuk grafik
+        $productNames = Product::pluck('name');
+        $productStocks = Product::pluck('quantity');
+
         return view('home', compact(
             'userCount',
             'productCount',
             'salesCount',
             'memberCount',
             'salesDates',
-            'salesTotals'
+            'salesTotals',
+            'productNames',
+            'productStocks'
         ));
     }
 

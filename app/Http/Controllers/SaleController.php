@@ -77,7 +77,7 @@ class SaleController extends Controller
             $totalAmount = $totalAmount - $request->total_point;
             Member::where('id', $memberId)->decrement('points', $request->total_point);
         } else {
-            $addPoint = $totalAmount / 750;
+            $addPoint = $totalAmount / 100;
             Member::where('id', $memberId)->increment('points', $addPoint);
         }
 
@@ -111,15 +111,22 @@ class SaleController extends Controller
     public function showInvoice($id)
     {
         $sale = Sale::where('id', $id)->firstOrFail();
-    
+
         $productData = json_decode($sale->product_data, true);
-    
+
         $totalProductPrice = array_reduce($productData, function ($carry, $item) {
             return $carry + ($item['price'] * $item['quantity']);
         }, 0);
-    
+
         $discount = $totalProductPrice - $sale->total_amount;
-    
+
+        // Hitung poin yang didapat (jika transaksi dilakukan oleh member)
+        $points = 0;
+        if ($sale->member_id) {
+            // Misal: setiap 10.000 rupiah = 1 poin
+            $points = floor(($sale->total_amount + $discount) / 100);
+        }
+
         return view('sales.invoice-detail', [
             'invoiceNumber' => $sale->invoice_number,
             'memberName'    => $sale->customer_name,
@@ -129,9 +136,11 @@ class SaleController extends Controller
             'totalPay'      => $sale->payment_amount,
             'changeAmount'  => $sale->change_amount,
             'discount'      => $discount,
-            'createdAt'     => $sale->created_at
+            'createdAt'     => $sale->created_at,
+            'points'        => $points
         ]);
     }
+
     
 
     public function show(Sale $sale)

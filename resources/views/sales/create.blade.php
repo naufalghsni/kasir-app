@@ -35,18 +35,18 @@
                                 <div class="row">
                                     @foreach ($products as $product)
                                         <div class="col-md-4 d-flex align-items-stretch">
-                                            <div class="card mb-3 w-100 d-flex flex-column">
+                                            <div class="card mb-3 w-100 d-flex flex-column {{ $product->quantity == 0 ? 'border-danger' : '' }}">
                                                 <div class="d-flex justify-content-center p-3" style="height: 250px; overflow: hidden;">
                                                     <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" alt="{{ $product->name }}" style="object-fit: cover; height: 100%; width: 100%; max-height: 180px;">
                                                 </div>
                                                 <div class="card-body d-flex flex-column flex-grow-1 justify-content-between">
                                                     <h5 class="card-title text-center">{{ $product->name }}</h5>
                                                     <p class="card-text text-center">Harga: Rp {{ number_format($product->price, 0, ',', '.') }}</p>
-                                                    <p class="card-text text-center">Stok: {{ $product->quantity }}</p>
+                                                    <p class="card-text text-center {{ $product->quantity == 0 ? 'text-danger' : '' }}">Stok: {{ $product->quantity }}</p>
                                                     <div class="d-flex justify-content-center align-items-center">
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary decrement" data-id="{{ $product->id }}">-</button>
-                                                        <input type="number" name="quantities[{{ $product->id }}]" id="quantity-{{ $product->id }}" class="form-control text-center mx-2" style="width: 60px;" min="0" value="0">
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary increment" data-id="{{ $product->id }}">+</button>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary decrement" data-id="{{ $product->id }}" {{ $product->quantity == 0 ? 'disabled' : '' }}>-</button>
+                                                        <input type="number" name="quantities[{{ $product->id }}]" id="quantity-{{ $product->id }}" class="form-control text-center mx-2" style="width: 60px;" min="0" value="0" {{ $product->quantity == 0 ? 'readonly style=background-color:#e9ecef;cursor:not-allowed;' : '' }}>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary increment" data-id="{{ $product->id }}" data-stock="{{ $product->quantity }}" {{ $product->quantity == 0 ? 'disabled' : '' }}>+</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -71,8 +71,9 @@
         document.querySelectorAll(".increment").forEach(button => {
             button.addEventListener("click", function () {
                 let productId = this.getAttribute("data-id");
+                let stock = parseInt(this.getAttribute("data-stock"));
                 let input = document.getElementById("quantity-" + productId);
-                if (input) {
+                if (input && parseInt(input.value) < stock) {
                     input.value = parseInt(input.value) + 1;
                 }
             });
